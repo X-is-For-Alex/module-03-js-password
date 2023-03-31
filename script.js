@@ -4,34 +4,46 @@ var generateBtn = document.querySelector("#generate");
 var upperChar = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
 var lowerChar = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
 var specialChar = ["!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", "=", "+", ";", ":", ",", "<", ".", ">", "/", "?"];
-var numbers = [];
-
-var pwdLength = 15;
-
-// Write password to the #password input
-function writePassword() {
-  var password = initPasswordGen();
-  var passwordText = document.querySelector("#password");
-
-  passwordText.value = password;  // write password to page
-}
+var numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+var chosenChar = [];
 
 
 // Add event listener to generate button
-generateBtn.addEventListener("click", writePassword);
+generateBtn.addEventListener("click", initPasswordGen);
+
 
 // user facing operations
 function initPasswordGen(){
-  console.log("initiating random password generator");
-  var pwdLength = Math.floor(prompt("Please indicate how long (min 8, max 128) you'd like your password to be:", 8));
-  
-  console.log(`password length set to: ${pwdLength}`);
+  var chosenChar = [];
+  var passwordText = document.querySelector("#password");
 
-  if (pwdLength >= 8 && pwdLength <= 128) {
-    console.log("password length is a valid number");
-    generatePassword(pwdLength);
-  } else {
-    console.log("password length is NOT a valid number");
+  // get user-defined password length:
+  var pwdLength = Math.floor(prompt("Please indicate how long (min 8, max 128) you'd like your password to be:", 8));
+
+  // verify user picked a valid number:
+  if (pwdLength >= 8 && pwdLength <= 128) { 
+    var lowerChoice =confirm("Please click OK if you would like your password to include lower case letters");
+    var upperChoice = confirm("Please click OK if you would like your password to include UPPER case letters");
+    var specialChoice = confirm("Please click OK if you would like your password to include special characters");
+    var numberChoice = confirm("Please click OK if you would like your password to include numbers");
+
+    // verify at least one character set is designated:
+    if (!lowerChoice && !upperChoice && !specialChoice && !numberChoice) { 
+      alert("You must pick at least one character set to generate a password!");
+      initPasswordGen();
+    }
+    else {
+      // build specified character set by calling this function and passing parameters:
+      var charSet = buildCharArray(lowerChoice, upperChoice, specialChoice, numberChoice);
+
+      // generate random password characters contained in the user-defined character set: 
+      var password = generatePassword(pwdLength, charSet);
+
+      // write password to page:
+      passwordText.value = password; 
+    }
+  }
+  else {
     alert("please enter a whole number between 8 and 128");
     initPasswordGen();
   }
@@ -39,21 +51,40 @@ function initPasswordGen(){
 
 
 // generate password here:
-function generatePassword(pwdLength) {
-  console.log(`initiating random number generator with length set to: ${pwdLength}`);
-  var chosenChar = [].concat(upperChar, lowerChar);
-  console.log(chosenChar.length);
+function generatePassword(pwdLength, charSet) {
   pwdChar = [];
 
   for (i=0; i < pwdLength; i++) {
-    var randNum = generateRandomNumber(chosenChar.length);
-    pwdChar.push(chosenChar[randNum]);
+    var randNum = generateRandomNumber(charSet.length);
+    pwdChar.push(charSet[randNum]);
   }
-  console.log(pdwChar.join(''));
-  return pdwChar.join('');
+  var pwdChar = pwdChar.join('')
+  return pwdChar;
 }
 
-function generateRandomNumber(limit){
-  var randomDigit = Math.floor(Math.random() * limit);
+
+// generate random number based on the size of our user-defined character set here:
+function generateRandomNumber(charLimit){
+  var randomDigit = Math.floor(Math.random() * charLimit);
   return randomDigit;
+}
+
+
+// character array builder
+function buildCharArray(optionLower, optionUpper, optionSpecial, optionNumber) {
+  var chosenChar = [];
+
+  if (optionLower) {
+    chosenChar = chosenChar.concat(lowerChar);
+  }
+  if (optionUpper){
+      chosenChar = chosenChar.concat(upperChar);
+  }
+  if (optionSpecial){
+    chosenChar = chosenChar.concat(specialChar);
+  }
+  if (optionNumber){
+    chosenChar = chosenChar.concat(numbers);
+  }
+  return chosenChar;
 }
