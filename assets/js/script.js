@@ -3,7 +3,7 @@ var generateBtn = document.querySelector("#generate");
 
 var upperChar = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
 var lowerChar = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
-var specialChar = ["!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", "=", "+", ";", ":", ",", "<", ".", ">", "/", "?"];
+var specialChar = ["!", "\"", "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "]", "^", "_", "`", "{", "|", "}", "~"];
 var numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 var chosenChar = [];
 
@@ -14,7 +14,7 @@ generateBtn.addEventListener("click", initPasswordGen);
 
 // user facing operations
 function initPasswordGen(){
-  var chosenChar = [];
+  var chosenChar = [];  // reset user defined character set to null
   var passwordText = document.querySelector("#password");
 
   // get user-defined password length:
@@ -55,15 +55,15 @@ function generatePassword(pwdLength, charSet) {
   pwdChar = [];
 
   for (i=0; i < pwdLength; i++) {
-    var randNum = generateRandomNumber(charSet.length);
-    pwdChar.push(charSet[randNum]);
+    var randNum = generateRandomNumber(charSet.length);   // create random index number
+    pwdChar.push(charSet[randNum]);   // match index number to character
   }
   var pwdChar = pwdChar.join('')
   return pwdChar;
 }
 
 
-// generate random number based on the size of our user-defined character set here:
+// generate random number based on the size of user-defined character set here:
 function generateRandomNumber(charLimit){
   var randomDigit = Math.floor(Math.random() * charLimit);
   return randomDigit;
